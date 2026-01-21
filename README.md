@@ -111,14 +111,14 @@ Visit `http://localhost:5173` 🎉
 ## 🎨 Screenshots
 
 ### Dashboard
-![Dashboard] <img width="1920" height="931" alt="Image" src="https://github.com/user-attachments/assets/52e5a7bc-2007-4aa0-a5a7-3cce1fd49eda" /> 
+<img width="1920" height="931" alt="Image" src="https://github.com/user-attachments/assets/52e5a7bc-2007-4aa0-a5a7-3cce1fd49eda" /> 
 
 
 ### Study Plans
-![Study Plans](https://via.placeholder.com/800x400/059669/ffffff?text=AI+Generated+Study+Plans)
+<img width="1920" height="954" alt="Image" src="https://github.com/user-attachments/assets/a2e0e6ea-7c08-4292-b060-b07e1b4d97bf" />
 
 ### Practice Tests
-![Practice Tests](https://via.placeholder.com/800x400/dc2626/ffffff?text=Interactive+Practice+Tests)
+<img width="1920" height="940" alt="Image" src="https://github.com/user-attachments/assets/bca57f93-5188-4738-9eb0-07ea58f27b14" />
 
 ## 🔧 API Endpoints
 
