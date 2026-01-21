@@ -43,7 +43,25 @@ app.use('/api/subjects', subjectRoutes);
 app.use('/api/study-sessions', studySessionRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/study-groups', studyGroupRoutes);
-app.use('/api/practice-tests', practiceTestRoutes);
+app.use('/api/practice-tests', practiceTestRoutes); 
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Exam Readiness Predictor API is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      subjects: '/api/subjects',
+      sessions: '/api/study-sessions',
+      exams: '/api/exams',
+      groups: '/api/study-groups',
+      tests: '/api/practice-tests'
+    }
+  });
+});
 
 // Health check route
 app.get('/api/health', (req, res) => {
