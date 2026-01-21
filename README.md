@@ -111,7 +111,8 @@ Visit `http://localhost:5173` 🎉
 ## 🎨 Screenshots
 
 ### Dashboard
-![Dashboard](https://via.placeholder.com/800x400/4f46e5/ffffff?text=Smart+Analytics+Dashboard)
+![Dashboard](<img width="1920" height="931" alt="Image" src="https://github.com/user-attachments/assets/52e5a7bc-2007-4aa0-a5a7-3cce1fd49eda" /> 
+)
 
 ### Study Plans
 ![Study Plans](https://via.placeholder.com/800x400/059669/ffffff?text=AI+Generated+Study+Plans)
@@ -162,18 +163,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **MongoDB Atlas** for reliable database hosting
 - **Netlify & Render** for seamless deployment
 
-## 📞 Support
-
-- 📧 Email: support@exampredictor.com
-- 💬 Discord: [Join our community](https://discord.gg/exampredictor)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/exam-readiness-predictor/issues)
-
----
-
 <div align="center">
 
 **Made with ❤️ for students worldwide**
 
-[⭐ Star this repo](https://github.com/yourusername/exam-readiness-predictor) • [🐛 Report Bug](https://github.com/yourusername/exam-readiness-predictor/issues) • [✨ Request Feature](https://github.com/yourusername/exam-readiness-predictor/issues)
-
+[⭐ Star this repo](https://github.com/yourusername/exam-readiness-predictor) 
 </div>
