@@ -111,8 +111,8 @@ Visit `http://localhost:5173` 🎉
 ## 🎨 Screenshots
 
 ### Dashboard
-![Dashboard](<img width="1920" height="931" alt="Image" src="https://github.com/user-attachments/assets/52e5a7bc-2007-4aa0-a5a7-3cce1fd49eda" /> 
-)
+![Dashboard] <img width="1920" height="931" alt="Image" src="https://github.com/user-attachments/assets/52e5a7bc-2007-4aa0-a5a7-3cce1fd49eda" /> 
+
 
 ### Study Plans
 ![Study Plans](https://via.placeholder.com/800x400/059669/ffffff?text=AI+Generated+Study+Plans)
