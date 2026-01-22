@@ -20,9 +20,9 @@ export default function Exams() {
     name: '',
     examDate: '',
     subjects: [],
-    totalMarks: 100,
-    passingMarks: 40,
-    examType: 'Final'
+    totalMarks: '',
+    passingMarks: '',
+    examType: ''
   });
 
   useEffect(() => {
@@ -48,11 +48,18 @@ export default function Exams() {
     e.preventDefault();
     setSubmitting(true);
     try {
+      const submitData = {
+        ...formData,
+        totalMarks: parseInt(formData.totalMarks) || 100,
+        passingMarks: parseInt(formData.passingMarks) || 40,
+        examType: formData.examType || 'Final'
+      };
+      
       if (editingExam) {
-        await examService.update(editingExam._id, formData);
+        await examService.update(editingExam._id, submitData);
         success('Exam updated successfully');
       } else {
-        await examService.create(formData);
+        await examService.create(submitData);
         success('Exam created successfully');
       }
       setShowForm(false);
@@ -61,9 +68,9 @@ export default function Exams() {
         name: '',
         examDate: '',
         subjects: [],
-        totalMarks: 100,
-        passingMarks: 40,
-        examType: 'Final'
+        totalMarks: '',
+        passingMarks: '',
+        examType: ''
       });
       loadData();
     } catch (error) {
@@ -173,18 +180,18 @@ export default function Exams() {
             <label>Total Marks</label>
             <input
               type="number"
-              placeholder="e.g., 100"
+              placeholder="Enter total marks"
               value={formData.totalMarks}
-              onChange={(e) => setFormData({ ...formData, totalMarks: parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, totalMarks: e.target.value ? parseInt(e.target.value) : '' })}
             />
           </div>
           <div className="form-group">
             <label>Passing Marks</label>
             <input
               type="number"
-              placeholder="e.g., 40"
+              placeholder="Enter passing marks"
               value={formData.passingMarks}
-              onChange={(e) => setFormData({ ...formData, passingMarks: parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, passingMarks: e.target.value ? parseInt(e.target.value) : '' })}
             />
           </div>
           <div className="form-group">
@@ -194,13 +201,14 @@ export default function Exams() {
               value={formData.examType}
               onChange={(e) => setFormData({ ...formData, examType: e.target.value })}
             >
-              <option>Final</option>
-              <option>Midterm</option>
-              <option>Quiz</option>
-              <option>Assignment</option>
+              <option value="">Choose exam type</option>
+              <option value="Final">Final</option>
+              <option value="Midterm">Midterm</option>
+              <option value="Quiz">Quiz</option>
+              <option value="Assignment">Assignment</option>
             </select>
             <button type="button" className="mobile-select-btn" onClick={() => openModal('examType')}>
-              {formData.examType}
+              {formData.examType || 'Choose exam type'}
             </button>
           </div>
           
