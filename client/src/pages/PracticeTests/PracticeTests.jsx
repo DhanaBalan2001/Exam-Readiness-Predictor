@@ -7,6 +7,9 @@ import './PracticeTests.css';
 export default function PracticeTests() {
   const { success, error: showError } = useToast();
   const [practiceTests, setPracticeTests] = useState([]);
+  const [completedTests, setCompletedTests] = useState([]);
+  const [skippedTests, setSkippedTests] = useState([]);
+  const [activeTab, setActiveTab] = useState('completed');
   const [exams, setExams] = useState([]);
   const [currentTest, setCurrentTest] = useState(null);
   const [answers, setAnswers] = useState({});
@@ -18,8 +21,8 @@ export default function PracticeTests() {
   const [selectedTest, setSelectedTest] = useState(null);
   const [formData, setFormData] = useState({
     examId: '',
-    difficulty: 'medium',
-    questionCount: 10
+    difficulty: '',
+    questionCount: 0
   });
 
   useEffect(() => {
@@ -70,7 +73,14 @@ export default function PracticeTests() {
         practiceTestService.getAll(),
         examService.getAll()
       ]);
-      setPracticeTests(testsRes.data.practiceTests);
+      const allTests = testsRes.data.practiceTests;
+      console.log('All tests:', allTests.map(t => ({ id: t._id, status: t.status })));
+      setPracticeTests(allTests);
+      const completed = allTests.filter(test => test.status === 'completed');
+      const skipped = allTests.filter(test => test.status === 'skipped');
+      console.log('Completed tests:', completed.length, 'Skipped tests:', skipped.length);
+      setCompletedTests(completed);
+      setSkippedTests(skipped);
       setExams(examsRes.data.exams);
     } catch (error) {
       showError('Failed to load data');
@@ -105,13 +115,31 @@ export default function PracticeTests() {
   };
 
   const confirmSkip = async () => {
-    setShowSkipConfirm(false);
-    await handleSubmitTest();
+    try {
+      const answerArray = currentTest.questions.map((_, index) => answers[index] ?? -1);
+      const submitData = {
+        answers: answerArray,
+        timeTaken: (currentTest.timeLimit * 60) - timeLeft,
+        status: 'skipped'
+      };
+      console.log('Skipping test with data:', submitData);
+      await practiceTestService.submit(currentTest._id, submitData);
+      success('Test skipped successfully!');
+      setCurrentTest(null);
+      setAnswers({});
+      setTimeLeft(0);
+      setShowSkipConfirm(false);
+      loadData();
+    } catch (error) {
+      console.error('Skip error:', error);
+      showError('Failed to skip test');
+    }
   };
 
 
 
   const handleDeleteTest = async (testId) => {
+    setSelectedTest(null);
     setShowDeleteConfirm(testId);
   };
 
@@ -133,6 +161,7 @@ export default function PracticeTests() {
       showError('Failed to delete practice test');
     } finally {
       setShowDeleteConfirm(null);
+      setSelectedTest(null);
     }
   };
 
@@ -215,8 +244,25 @@ export default function PracticeTests() {
         </button>
       </div>
 
+      <div className="tabs-container">
+        <div className="tabs">
+          <button 
+            className={`ta ${activeTab === 'completed' ? 'active' : ''}`}
+            onClick={() => setActiveTab('completed')}
+          >
+            Completed Tests ({completedTests.length})
+          </button>
+          <button 
+            className={`tab ${activeTab === 'skipped' ? 'active' : ''}`}
+            onClick={() => setActiveTab('skipped')}
+          >
+            Skipped Tests ({skippedTests.length})
+          </button>
+        </div>
+      </div>
+
       <div className="tests-grid">
-        {practiceTests.map(test => (
+        {(activeTab === 'completed' ? completedTests : skippedTests).map(test => (
           <div 
             key={test._id} 
             className={`test-card ${test.status === 'completed' ? 'clickable' : ''}`}
@@ -244,7 +290,10 @@ export default function PracticeTests() {
               <p>Date: {new Date(test.createdAt).toLocaleDateString()}</p>
               <button 
                 className="btn-danger btn-small" 
-                onClick={() => handleDeleteTest(test._id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteTest(test._id);
+                }}
                 title="Delete test"
               >
                 <Trash2 size={14} />
@@ -341,33 +390,44 @@ export default function PracticeTests() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>Create Practice Test</h3>
             <form onSubmit={handleCreateTest}>
-              <select
-                value={formData.examId}
-                onChange={(e) => setFormData({...formData, examId: e.target.value})}
-                required
-              >
-                <option value="">Select Exam</option>
-                {exams.map(exam => (
-                  <option key={exam._id} value={exam._id}>{exam.name}</option>
-                ))}
-              </select>
-              <select
-                value={formData.difficulty}
-                onChange={(e) => setFormData({...formData, difficulty: e.target.value})}
-              >
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
-              <input
-                type="number"
-                placeholder="Number of Questions"
-                min="5"
-                max="50"
-                value={formData.questionCount}
-                onChange={(e) => setFormData({...formData, questionCount: parseInt(e.target.value)})}
-                required
-              />
+              <div className="form-group">
+                <label>Select Exam</label>
+                <select
+                  value={formData.examId}
+                  onChange={(e) => setFormData({...formData, examId: e.target.value})}
+                  required
+                >
+                  <option value="">Choose an exam</option>
+                  {exams.map(exam => (
+                    <option key={exam._id} value={exam._id}>{exam.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Select Difficulty Level</label>
+                <select
+                  value={formData.difficulty}
+                  onChange={(e) => setFormData({...formData, difficulty: e.target.value})}
+                  required
+                >
+                  <option value="">Choose your level</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Number of Questions</label>
+                <input
+                  type="number"
+                  placeholder="Enter number of questions"
+                  min="5"
+                  max="50"
+                  value={formData.questionCount}
+                  onChange={(e) => setFormData({...formData, questionCount: parseInt(e.target.value)})}
+                  required
+                />
+              </div>
               <div className="modal-actions">
                 <button type="submit" className="btn-primary">Start Test</button>
                 <button type="button" className="btn-secondary" onClick={() => setShowCreateForm(false)}>Cancel</button>
