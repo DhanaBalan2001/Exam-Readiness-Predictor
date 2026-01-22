@@ -28,11 +28,57 @@ export default function Reports() {
         subjectService.getAll()
       ]);
       
-      setStudySessions(sessionsRes.data.studySessions);
-      setExams(examsRes.data.exams);
-      setSubjects(subjectsRes.data.subjects);
-      calculateAnalytics(sessionsRes.data.studySessions, period);
+      const sessions = sessionsRes.data.studySessions;
+      const examsData = examsRes.data.exams;
+      const subjectsData = subjectsRes.data.subjects;
+      
+      console.log('Loaded data:', {
+        sessions: sessions.length,
+        exams: examsData.length,
+        subjects: subjectsData.length
+      });
+      console.log('Exams data:', examsData);
+      console.log('Sessions data:', sessions);
+      console.log('First session:', sessions[0]);
+      console.log('Session subjectId:', sessions[0]?.subjectId);
+      
+      setStudySessions(sessions);
+      setExams(examsData);
+      setSubjects(subjectsData);
+      
+      // Calculate analytics with the loaded data
+      const subjectData = {};
+      sessions.forEach(s => {
+        if (!s.subjectId || !s.subjectId.name) return;
+        const subjectName = s.subjectId.name;
+        if (!subjectData[subjectName]) {
+          subjectData[subjectName] = { name: subjectName, hours: 0, sessions: 0 };
+        }
+        subjectData[subjectName].hours += s.hoursStudied;
+        subjectData[subjectName].sessions += 1;
+      });
+      
+      console.log('Subject data:', subjectData);
+      
+      const totalHours = sessions.reduce((sum, s) => sum + s.hoursStudied, 0);
+      const avgConfidence = sessions.length > 0 
+        ? sessions.reduce((sum, s) => sum + s.overallConfidence, 0) / sessions.length 
+        : 0;
+      
+      const analyticsData = {
+        subjectDistribution: Object.values(subjectData),
+        totalSessions: sessions.length,
+        totalHours: totalHours.toFixed(1),
+        avgConfidence: avgConfidence.toFixed(1),
+        totalExams: examsData.length
+      };
+      
+      console.log('Analytics data:', analyticsData);
+      setAnalytics(analyticsData);
+      
+      calculateAnalytics(sessions, period);
     } catch (err) {
+      console.error('Load data error:', err);
       showError('Failed to load reports data');
     } finally {
       setLoading(false);
@@ -42,10 +88,8 @@ export default function Reports() {
   const calculateAnalytics = (sessions, periodType) => {
     const now = new Date();
     let data = [];
-    let days = 7;
 
     if (periodType === 'daily') {
-      days = 7;
       for (let i = 6; i >= 0; i--) {
         const date = new Date(now);
         date.setDate(date.getDate() - i);
@@ -102,30 +146,10 @@ export default function Reports() {
       }
     }
 
-    const subjectData = {};
-    sessions.forEach(s => {
-      if (!s.subjectId || !s.subjectId.name) return;
-      const subjectName = s.subjectId.name;
-      if (!subjectData[subjectName]) {
-        subjectData[subjectName] = { name: subjectName, hours: 0, sessions: 0 };
-      }
-      subjectData[subjectName].hours += s.hoursStudied;
-      subjectData[subjectName].sessions += 1;
-    });
-
-    const totalHours = sessions.reduce((sum, s) => sum + s.hoursStudied, 0);
-    const avgConfidence = sessions.length > 0 
-      ? sessions.reduce((sum, s) => sum + s.overallConfidence, 0) / sessions.length 
-      : 0;
-
-    setAnalytics({
-      chartData: data,
-      subjectDistribution: Object.values(subjectData),
-      totalSessions: sessions.length,
-      totalHours: totalHours.toFixed(1),
-      avgConfidence: avgConfidence.toFixed(1),
-      totalExams: exams.length
-    });
+    setAnalytics(prev => ({
+      ...prev,
+      chartData: data
+    }));
   };
 
   const downloadCSV = () => {
