@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
   },
   studentId: {
     type: String,
-    unique: true,
     sparse: true
   },
   institution: String,
