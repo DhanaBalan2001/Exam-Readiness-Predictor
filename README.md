@@ -2,7 +2,7 @@
 
 > **AI-Powered Study Companion** - Transform your exam preparation with intelligent analytics, personalized study plans, and comprehensive progress tracking.
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-blue?style=for-the-badge)](https://your-netlify-url.netlify.app)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-blue?style=for-the-badge)](https://examreadinesspredictor.netlify.app)
 [![Backend API](https://img.shields.io/badge/🚀_API-Live_Server-green?style=for-the-badge)](https://exam-readiness-predictor.onrender.com )
 
 
@@ -168,5 +168,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for students worldwide**
 
-[⭐ Star this repo](https://github.com/yourusername/exam-readiness-predictor) 
+[⭐ Star this repo](https://github.com/DhanaBalan2001/Exam-Readiness-Predictor) 
 </div>
