@@ -23,7 +23,7 @@ export const register = async (req, res) => {
       name,
       email,
       password,
-      studentId,
+      studentId: studentId || undefined,
       institution,
       course
     });
@@ -43,7 +43,10 @@ export const register = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: error.message || 'Registration failed'
+    });
   }
 };
 
@@ -100,7 +103,7 @@ export const updateProfile = async (req, res) => {
     
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      { name, studentId, institution, course },
+      { name, studentId: studentId || undefined, institution, course },
       { new: true, runValidators: true }
     ).select('-password');
 
