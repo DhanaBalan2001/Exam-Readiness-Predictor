@@ -336,7 +336,7 @@ export const createPracticeTest = async (req, res) => {
         }
       }
       
-      const timeLimit = questionCount * 2;
+      const timeLimit = Math.max(questionCount * 1, 5); // 1 minute per question, minimum 5 minutes
       const practiceTest = await PracticeTest.create({
         userId: req.user.id,
         examId,
@@ -360,7 +360,7 @@ export const createPracticeTest = async (req, res) => {
     const questions = generateQuestions(subjects, difficulty, questionCount);
     console.log('Generated questions:', questions.length);
     
-    const timeLimit = questionCount * 2; // 2 minutes per question
+    const timeLimit = Math.max(questionCount * 1, 5); // 1 minute per question, minimum 5 minutes
 
     const practiceTest = await PracticeTest.create({
       userId: req.user.id,
@@ -381,7 +381,9 @@ export const createPracticeTest = async (req, res) => {
 
 export const submitPracticeTest = async (req, res) => {
   try {
-    const { answers, timeTaken } = req.body;
+    console.log('Full request body:', req.body);
+    const { answers, timeTaken, status } = req.body;
+    console.log('Extracted values:', { answers: answers?.length, timeTaken, status });
     
     const practiceTest = await PracticeTest.findOne({
       _id: req.params.id,
@@ -402,11 +404,14 @@ export const submitPracticeTest = async (req, res) => {
 
     practiceTest.score = Math.round((correctAnswers / practiceTest.totalQuestions) * 100);
     practiceTest.timeTaken = timeTaken;
-    practiceTest.status = 'completed';
+    practiceTest.status = status === 'skipped' ? 'skipped' : 'completed';
 
-    await practiceTest.save();
-    res.json({ success: true, practiceTest });
+    console.log('About to save with status:', practiceTest.status);
+    const savedTest = await practiceTest.save();
+    console.log('Saved test status:', savedTest.status);
+    res.json({ success: true, practiceTest: savedTest });
   } catch (error) {
+    console.error('Submit error:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -440,6 +445,7 @@ export const getPracticeTests = async (req, res) => {
       .populate('examId', 'name')
       .sort({ createdAt: -1 });
 
+    console.log('Retrieved tests:', practiceTests.map(t => ({ id: t._id, status: t.status })));
     res.json({ success: true, practiceTests });
   } catch (error) {
     res.status(500).json({ message: error.message });
