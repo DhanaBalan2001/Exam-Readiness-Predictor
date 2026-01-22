@@ -54,7 +54,7 @@ const practiceTestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['in-progress', 'completed', 'abandoned'],
+    enum: ['in-progress', 'completed', 'skipped', 'abandoned'],
     default: 'in-progress'
   },
   difficulty: {
