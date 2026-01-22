@@ -19,7 +19,7 @@ export default function StudySessions() {
     subjectId: '',
     hoursStudied: 0,
     overallConfidence: 3,
-    mood: 'Average',
+    mood: '',
     burnoutIndicators: { fatigue: 3, motivation: 3, focus: 3 }
   });
 
@@ -46,11 +46,21 @@ export default function StudySessions() {
     e.preventDefault();
     setSubmitting(true);
     try {
+      const submitData = {
+        subjectId: formData.subjectId,
+        hoursStudied: Math.min(parseFloat(formData.hoursStudied) || 0, 24),
+        overallConfidence: parseInt(formData.overallConfidence) || 3,
+        mood: formData.mood || 'Average',
+        burnoutIndicators: formData.burnoutIndicators || { fatigue: 3, motivation: 3, focus: 3 }
+      };
+      
+      console.log('Submitting data:', submitData);
+      
       if (editingSession) {
-        await studySessionService.update(editingSession._id, formData);
+        await studySessionService.update(editingSession._id, submitData);
         success('Study session updated successfully');
       } else {
-        await studySessionService.create(formData);
+        await studySessionService.create(submitData);
         success('Study session created successfully');
       }
       setShowForm(false);
@@ -59,11 +69,12 @@ export default function StudySessions() {
         subjectId: '',
         hoursStudied: 0,
         overallConfidence: 3,
-        mood: 'Average',
+        mood: '',
         burnoutIndicators: { fatigue: 3, motivation: 3, focus: 3 }
       });
       loadData();
     } catch (error) {
+      console.error('Submit error:', error.response?.data || error.message);
       showError(`Failed to ${editingSession ? 'update' : 'create'} study session`);
     } finally {
       setSubmitting(false);
@@ -92,7 +103,7 @@ export default function StudySessions() {
       subjectId: session.subjectId?._id || '',
       hoursStudied: session.hoursStudied || 0,
       overallConfidence: session.overallConfidence || 3,
-      mood: session.mood || 'Average',
+      mood: session.mood || '',
       burnoutIndicators: session.burnoutIndicators || { fatigue: 3, motivation: 3, focus: 3 }
     });
     setShowForm(true);
@@ -115,7 +126,7 @@ export default function StudySessions() {
       subjectId: '',
       hoursStudied: 0,
       overallConfidence: 3,
-      mood: 'Average',
+      mood: '',
       burnoutIndicators: { fatigue: 3, motivation: 3, focus: 3 }
     });
   };
@@ -160,9 +171,16 @@ export default function StudySessions() {
             <input
               type="number"
               step="0.5"
+              min="0"
+              max="24"
               placeholder="e.g., 2.5"
               value={formData.hoursStudied}
-              onChange={(e) => setFormData({ ...formData, hoursStudied: parseFloat(e.target.value) })}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                if (value <= 24) {
+                  setFormData({ ...formData, hoursStudied: value || 0 });
+                }
+              }}
               required
             />
           </div>
@@ -183,14 +201,15 @@ export default function StudySessions() {
               value={formData.mood}
               onChange={(e) => setFormData({ ...formData, mood: e.target.value })}
             >
-              <option>Excellent</option>
-              <option>Good</option>
-              <option>Average</option>
-              <option>Poor</option>
-              <option>Terrible</option>
+              <option value="">Choose your mood</option>
+              <option value="Excellent">Excellent</option>
+              <option value="Good">Good</option>
+              <option value="Average">Average</option>
+              <option value="Poor">Poor</option>
+              <option value="Terrible">Terrible</option>
             </select>
             <button type="button" className="mobile-select-btn" onClick={() => openModal('mood')}>
-              {formData.mood}
+              {formData.mood || 'Choose your mood'}
             </button>
           </div>
           <button type="submit" className="btn-success" disabled={submitting}>
