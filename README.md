@@ -1,6 +1,6 @@
 # 🎯 Exam Readiness Predictor
 
-> **AI-Powered Study Companion** - Transform your exam preparation with intelligent analytics, personalized study plans, and comprehensive progress tracking.
+> Transform your exam preparation with intelligent analytics, personalized study plans, and comprehensive progress tracking.
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-blue?style=for-the-badge)](https://examreadinesspredictor.netlify.app)
 [![Backend API](https://img.shields.io/badge/🚀_API-Live_Server-green?style=for-the-badge)](https://exam-readiness-predictor.onrender.com )
