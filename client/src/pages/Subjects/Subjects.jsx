@@ -19,9 +19,9 @@ export default function Subjects() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    totalTopics: 10,
-    difficulty: 'Medium',
-    priority: 'Medium',
+    totalTopics: '',
+    difficulty: '',
+    priority: '',
     examWeightage: 0,
     file: null
   });
@@ -48,8 +48,8 @@ export default function Subjects() {
       const submitData = new FormData();
       submitData.append('name', formData.name);
       submitData.append('totalTopics', formData.totalTopics);
-      submitData.append('difficulty', formData.difficulty);
-      submitData.append('priority', formData.priority);
+      submitData.append('difficulty', formData.difficulty || 'Medium');
+      submitData.append('priority', formData.priority || 'Medium');
       submitData.append('examWeightage', formData.examWeightage);
       if (formData.file) {
         submitData.append('file', formData.file);
@@ -64,7 +64,7 @@ export default function Subjects() {
       }
       setShowForm(false);
       setEditingSubject(null);
-      setFormData({ name: '', totalTopics: 10, difficulty: 'Medium', priority: 'Medium', examWeightage: 0, file: null });
+      setFormData({ name: '', totalTopics: '', difficulty: '', priority: '', examWeightage: 0, file: null });
       loadSubjects();
     } catch (error) {
       showError(`Failed to ${editingSubject ? 'update' : 'create'} subject`);
@@ -145,9 +145,9 @@ export default function Subjects() {
             <label>Total Topics *</label>
             <input
               type="number"
-              placeholder="e.g., 10"
+              placeholder="Enter total topics"
               value={formData.totalTopics}
-              onChange={(e) => setFormData({ ...formData, totalTopics: parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, totalTopics: e.target.value ? parseInt(e.target.value) : '' })}
               required
             />
           </div>
@@ -158,12 +158,13 @@ export default function Subjects() {
               value={formData.difficulty}
               onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
             >
-              <option>Easy</option>
-              <option>Medium</option>
-              <option>Hard</option>
+              <option value="">Choose difficulty level</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
             </select>
             <button type="button" className="mobile-select-btn" onClick={() => openModal('difficulty')}>
-              {formData.difficulty}
+              {formData.difficulty || 'Choose difficulty level'}
             </button>
           </div>
           <div className="form-group">
@@ -173,21 +174,22 @@ export default function Subjects() {
               value={formData.priority}
               onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
             >
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
+              <option value="">Choose priority level</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
             </select>
             <button type="button" className="mobile-select-btn" onClick={() => openModal('priority')}>
-              {formData.priority}
+              {formData.priority || 'Choose priority level'}
             </button>
           </div>
           <div className="form-group">
             <label>Exam Weightage (%)</label>
             <input
               type="number"
-              placeholder="e.g., 30"
+              placeholder="Enter exam weightage"
               value={formData.examWeightage}
-              onChange={(e) => setFormData({ ...formData, examWeightage: parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, examWeightage: parseInt(e.target.value) || 0 })}
             />
           </div>
           <div className="form-group">
