@@ -3,6 +3,61 @@
   margin: 0 auto;
 }
 
+.tabs-container {
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+    color: #4747d6;
+  border-bottom: 2px solid #e5e7eb;
+  gap: 0;
+}
+
+.ta {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #0e0e10;
+  transition: all 0.2s;
+}
+
+.tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #0e0e10;
+  transition: all 0.2s;
+}
+
+.ta:hover {
+  color: #e1e1e3 !important;
+  background: #f8fafc;
+}
+
+.tab:hover {
+  color: #e1e1e3;
+  background: #f8fafc;
+}
+
+.ta.active {
+  color: rgb(245, 240, 240);
+  border-bottom-color: #1e13f0;
+  background: #f8fafc;
+}
+
+.tab.active {
+  color: #dcdce1;
+  border-bottom-color: #1408f4;
+  background: #f8fafc;
+}
+
 .practice-test-active {
   max-width: 800px;
   margin: 0 auto;
@@ -194,9 +249,14 @@
   color: #065f46;
 }
 
-.status-badge.in-progress {
+.status-badge.skipped {
   background: #fef3c7;
   color: #92400e;
+}
+
+.status-badge.in-progress {
+  background: #ddd6fe;
+  color: #5b21b6;
 }
 
 .test-stats {
@@ -274,6 +334,18 @@
   border: 1px solid #d1d5db;
   border-radius: 8px;
   margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #374151;
   font-size: 14px;
 }
 
